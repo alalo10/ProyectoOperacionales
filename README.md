@@ -1,129 +1,213 @@
 # Proyecto Sistemas Operacionales  
 ## Simulación de un Sistema de Archivos usando Docker
 
-### 📌 Descripción general
+---
+
+## 📌 Descripción general
 Este proyecto consiste en la simulación de un sistema de archivos utilizando contenedores Docker.  
 El objetivo es comprender, de forma práctica, conceptos fundamentales de los Sistemas Operacionales como:
-- gestión de archivos
-- persistencia de datos
-- aislamiento de procesos
+
+- gestión de archivos  
+- persistencia de datos  
+- aislamiento de procesos  
+
 Cada contenedor representa un entorno aislado que interactúa con un sistema de archivos simulado mediante volúmenes de Docker.
+
 ---
 
-### 🎯 Objetivo del proyecto
+## 🎯 Objetivo del proyecto
 Simular el funcionamiento básico de un sistema de archivos, permitiendo realizar operaciones como creación, lectura, escritura y eliminación de archivos, y analizar su persistencia y aislamiento utilizando Docker.
+
 ---
 
-### 🧱 Estructura del proyecto
+## 🧱 Estructura del proyecto
+
 La estructura base del proyecto es la siguiente:
+
+```
 ProyectoOperacionales/
 │
-├── app/ # Código de la aplicación (Python / C++ / Java)
-│ └── main.py
+├── app/                  # Código de la aplicación (Python / C++ / Java)
+│   └── main.py
 │
-├── docker/ # Configuración de Docker
-│ └── Dockerfile
+├── docker/               # Configuración de Docker
+│   └── Dockerfile
 │
 ├── volumes/
-│ └── data/ # Sistema de archivos simulado (volumen)
+│   └── data/             # Sistema de archivos simulado (volumen)
 │
-├── docker-compose.yml # Orquestación de contenedores
-├── README.md # Documentación del proyecto
+├── docker-compose.yml    # Orquestación de contenedores
+├── README.md             # Documentacion del proyecto
 └── .gitignore
+```
 
-### 1. ▶️ Clonar el repositorio
-```terminal bash
+---
+
+## ▶️ Clonar el repositorio
+
+```bash
 git clone https://github.com/alalo10/ProyectoOperacionales.git
 cd ProyectoOperacionales
 ```
 
-### ¿Qué es un Dockerfile?
-Un Dockerfile es un archivo de texto que contiene las instrucciones para construir una imagen Docker, después de creados los programa se le dan las intrucciones al Dockerfile que ese sera el programa que va a contener, los contenedores docker corren en linux, es posible que corran con windows pero eso los vuelve más pesados y complejos por eso se usa la tecnologia WSL que es propia de docker y lo que permite es darle un piso con kernel de linux para crear las paredes del contenedor y este se pueda correr en toda máquina, los que hace WSL es conectar con el kernel de la maquia y ejecutar el kernel de linux
+---
+
+## 🐳 ¿Qué es un Dockerfile?
+
+Un **Dockerfile** es un archivo de texto que contiene las instrucciones necesarias para construir una imagen Docker.
+
+Los contenedores Docker se ejecutan sobre el kernel de Linux. En sistemas Windows, tecnologías como **WSL (Windows Subsystem for Linux)** permiten ejecutar contenedores Linux de forma eficiente.
 
 Dicho de forma sencilla:
 
-📦 Dockerfile = receta
-🧁 Imagen Docker = torta ya horneada
-▶️ Contenedor = torta servida y en uso
+- 📦 Dockerfile = receta  
+- 🧁 Imagen Docker = aplicación construida  
+- ▶️ Contenedor = aplicación en ejecución  
 
-## ¿Qué vamos a hacer realmente?
-📁 Sistema de archivos simulado con Docker
-pensado para Sistemas Operacionales, no para hacer un Windows 2.0.
+---
 
-1️⃣ ¿Interfaz, funcionalidad o ambos?
-👉 Ambos, pero minimalistas.
+## 📁 ¿Qué vamos a construir realmente?
 
-❌ Lo que NO vamos a hacer
-Interfaz gráfica (GUI)
-Ventanas, botones, explorador visual
-Leer PDFs, Word, Excel “por dentro”
-Eso no es objetivo de Sistemas Operacionales y complica demasiado.
+Un **sistema de archivos simulado con Docker**, diseñado con fines académicos para comprender cómo funcionan los Sistemas Operacionales.
 
-✅ Lo que SÍ vamos a hacer
-🖥️ Interfaz por consola (CLI)
-Tal como:
+Este proyecto no busca crear un sistema operativo completo, sino simular su comportamiento básico.
+
+---
+
+## 🖥️ Interfaz del sistema
+
+### 1️⃣ ¿Interfaz, funcionalidad o ambos?
+Se implementan ambas, pero de forma minimalista.
+
+### ❌ Lo que NO se implementa
+- Interfaz gráfica (GUI)  
+- Exploradores visuales o ventanas  
+- Interpretación interna de PDFs, Word o Excel  
+
+Estas funciones no forman parte del objetivo académico y aumentarían innecesariamente la complejidad.
+
+### ✅ Lo que SÍ se implementa
+🖥️ Interfaz por consola (CLI), similar a Unix/Linux:
+
+```
 ls
 cd
 mkdir
 touch
-📌 Esto es exactamente cómo funcionan los SO por debajo.
+```
 
-2️⃣ ¿Qué es “un archivo” en nuestro sistema?
-Clave conceptual 👇
+Esto representa cómo los sistemas operativos gestionan archivos internamente.
 
-👉 No importa el tipo del archivo
-Para el sistema operativo:
-.txt
-.pdf
-.xlsx
-.docx
+---
 
-👉 Todos son solo archivos con bytes
-📌 Así que NO los vamos a interpretar, solo:
-crear
-borrar
-mover
-listar
-leer texto (solo si es .txt)
-Eso es 100% coherente con SO.
+## 📂 ¿Qué es un archivo en nuestro sistema?
 
-3️⃣ ¿Qué funcionalidades DEBE tener el sistema?
-Vamos a definir un MVP académico (mínimo viable pero sólido).
+Para un sistema operativo:
 
-📁 Gestión de directorios
-Crear directorios
-Listar contenido
-Navegar entre carpetas
-Eliminar directorios vacíos
-Comandos simulados:
+- `.txt`
+- `.pdf`
+- `.xlsx`
+- `.docx`
+
+todos son simplemente datos organizados en bytes.
+
+El sistema no interpreta formatos; únicamente permite:
+
+- crear archivos  
+- borrar archivos  
+- mover archivos  
+- listar contenido  
+- leer texto (solo archivos `.txt`)  
+
+Esto es coherente con el funcionamiento real de un sistema operativo.
+
+---
+
+## ⚙️ Funcionalidades del sistema (MVP académico)
+
+### 📁 Gestión de directorios
+
+Permite:
+
+- crear directorios  
+- listar contenido  
+- navegar entre carpetas  
+- eliminar directorios vacíos  
+
+**Comandos simulados:**
+
+```bash
 mkdir docs
 cd docs
 ls
 rmdir docs
+```
 
-📄 Gestión de archivos
-Crear archivos vacíos
-Eliminar archivos
-Mover archivos
-Renombrar archivos
-Mostrar contenido solo de .txt
+---
 
-Ejemplos:
+### 📄 Gestión de archivos
+
+Permite:
+
+- crear archivos vacíos  
+- eliminar archivos  
+- mover archivos  
+- renombrar archivos  
+- mostrar contenido de archivos `.txt`  
+
+**Ejemplos:**
+
+```bash
 touch notas.txt
 rm notas.txt
 mv notas.txt backup.txt
 cat notas.txt
+```
 
-🔐 Metadatos (muy importante para SO)
-Cada archivo tendrá:
-Nombre
-Tamaño
-Tipo
-Fecha de creación
-Fecha de modificación
-📌 Esto se puede simular con estructuras en memoria
+---
 
-### ¿Qué rol juega Docker aquí?
-Docker garantiza que: Todos usan el mismo entorno, No importa Windows / Linux / Mac, El sistema funciona igual en cualquier PC
+### 🔐 Metadatos (importante en Sistemas Operacionales)
 
-📦 El contenedor será: “Un sistema Linux que ejecuta un gestor de archivos simulado por consola” -> Eso es texto de informe nivel SO.
+Cada archivo posee:
+
+- nombre  
+- tamaño  
+- tipo  
+- fecha de creación  
+- fecha de modificación  
+
+Estos metadatos pueden obtenerse del sistema Linux del contenedor o simularse mediante estructuras en memoria.
+
+---
+
+## 🐳 Rol de Docker en el proyecto
+
+Docker garantiza que:
+
+- todos los integrantes usan el mismo entorno  
+- no importa si se utiliza Windows, Linux o Mac  
+- el sistema funciona igual en cualquier computadora  
+- los procesos se ejecutan de forma aislada  
+- los datos pueden persistir mediante volúmenes  
+
+El contenedor representa:
+
+> Un sistema Linux que ejecuta un gestor de archivos simulado por consola.
+
+---
+
+## 💾 Persistencia de datos
+
+El volumen Docker permite que los archivos creados:
+
+- permanezcan aunque el contenedor se detenga  
+- no se pierdan al reiniciar el sistema  
+- simulen el almacenamiento real de un sistema operativo  
+
+---
+
+## 📚 Conclusión
+
+Este proyecto permite comprender de forma práctica cómo un sistema operativo gestiona archivos, mantiene la persistencia de datos y proporciona aislamiento de procesos, utilizando Docker como herramienta para simular estos comportamientos en un entorno controlado y portable.
+
+---
