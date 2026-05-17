@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gestor de archivos</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        color: #222;
+      }
+
+      main {
+        width: min(900px, calc(100% - 32px));
+        margin: 32px auto;
+      }
+
+      h1 {
+        margin-bottom: 8px;
+      }
+
+      section {
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+      }
+
+      label {
+        display: block;
+        margin-top: 12px;
+        font-weight: bold;
+      }
+
+      input,
+      textarea,
+      button {
+        box-sizing: border-box;
+        width: 100%;
+        margin-top: 6px;
+        padding: 10px;
+        font: inherit;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      button {
+        border: 0;
+        border-radius: 6px;
+        background: #2563eb;
+        color: white;
+        cursor: pointer;
+      }
+
+      button.delete {
+        width: auto;
+        background: #dc2626;
+      }
+
+      ul {
+        padding-left: 0;
+        list-style: none;
+      }
+
+      li {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .message {
+        margin-top: 12px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Gestor de archivos</h1>
+      <p>Proyecto universitario sencillo con Flask, Docker y volumen persistente.</p>
+
+      <section>
+        <h2>Crear archivo</h2>
+        <form id="file-form">
+          <label for="filename">Nombre del archivo</label>
+          <input id="filename" name="filename" placeholder="ejemplo.txt" required>
+
+          <label for="content">Contenido</label>
+          <textarea id="content" name="content" placeholder="Escribe el contenido del archivo"></textarea>
+
+          <button type="submit">Crear archivo</button>
+        </form>
+        <p id="message" class="message"></p>
+      </section>
+
+      <section>
+        <h2>Archivos guardados</h2>
+        <ul id="files"></ul>
+      </section>
+    </main>
+
+    <script>
+      const form = document.querySelector("#file-form");
+      const filesList = document.querySelector("#files");
+      const message = document.querySelector("#message");
+
+      async function loadFiles() {
+        const response = await fetch("/api/files");
+        const files = await response.json();
+
+        filesList.innerHTML = "";
+
+        if (files.length === 0) {
+          filesList.innerHTML = "<li>No hay archivos guardados.</li>";
+          return;
+        }
+
+        files.forEach((file) => {
+          const item = document.createElement("li");
+          const fileInfo = document.createElement("span");
+          const deleteButton = document.createElement("button");
+
+          fileInfo.textContent = `${file.name} (${file.size} bytes)`;
+          deleteButton.textContent = "Eliminar";
+          deleteButton.className = "delete";
+          deleteButton.dataset.filename = file.name;
+
+          item.appendChild(fileInfo);
+          item.appendChild(deleteButton);
+          filesList.appendChild(item);
+        });
+      }
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const filename = document.querySelector("#filename").value;
+        const content = document.querySelector("#content").value;
+
+        const response = await fetch("/api/files", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename, content }),
+        });
+
+        const result = await response.json();
+        message.textContent = result.message || result.error;
+
+        if (response.ok) {
+          form.reset();
+          loadFiles();
+        }
+      });
+
+      filesList.addEventListener("click", async (event) => {
+        if (!event.target.matches("button.delete")) {
+          return;
+        }
+
+        const filename = event.target.dataset.filename;
+        await fetch(`/api/files/${encodeURIComponent(filename)}`, { method: "DELETE" });
+        loadFiles();
+      });
+
+      loadFiles();
+    </script>
+  </body>
+</html>

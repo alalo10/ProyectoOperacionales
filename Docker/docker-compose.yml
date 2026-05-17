@@ -1,0 +1,11 @@
+services:
+  gestor-archivos:
+    build: .
+    container_name: gestor-archivos
+    ports:
+      - "5000:5000"
+    volumes:
+      - archivos_data:/data/files
+
+volumes:
+  archivos_data:
