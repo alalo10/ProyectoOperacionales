@@ -24,7 +24,7 @@ Simular el funcionamiento básico de un sistema de archivos, permitiendo realiza
 
 La estructura base del proyecto es la siguiente:
 
-```
+```text
 ProyectoOperacionales/
 │
 ├── app/                  # Código de la aplicación (Python / C++ / Java)
